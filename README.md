@@ -1,5 +1,17 @@
 # dotfiles
 
+<img width="1920" height="1080" alt="Screenshot 2026-07-03 at 3 06 43 PM" src="https://github.com/user-attachments/assets/b040e22f-0813-462e-87b8-c6f4f61e322d" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-06-18 at 2 52 10 PM" src="https://github.com/user-attachments/assets/a9b39daa-73a4-4acf-8460-4dc3238eb145" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-06-15 at 2 39 42 AM" src="https://github.com/user-attachments/assets/e17333d6-151d-4626-a0b8-842791fcd5cb" />
+
+<img width="1920" height="1079" alt="Screenshot 2026-06-14 at 3 24 21 PM" src="https://github.com/user-attachments/assets/4ebad6d8-4ae5-49bf-bcb1-8d1149d16e9f" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-06-14 at 3 24 51 PM" src="https://github.com/user-attachments/assets/f81e0249-933b-45f0-8484-e89bd688d347" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-06-14 at 3 33 24 PM" src="https://github.com/user-attachments/assets/b1fd36be-d399-40e1-a56f-df21a951cb20" />
+
 My macOS desktop setup for macOS Sequoia 15.7.7! This setup is highly inspired by breadonpenguin's setup on Linux, just recreated on macOS. It uses pywal to recolour the system based on the current wallpaper. 
 
 It's primarily made for Sequoia, but I've also tested it on macOS 26 (Tahoe). The Swift apps (WorkspacePeek, WallpaperPeek, WalNotify) build and run fine there, and sketchybar + rift work too. pywal was the one thing that didn't set up cleanly on a fresh Tahoe box (more on that below), everything else just falls back to the built in palettes without it. 
