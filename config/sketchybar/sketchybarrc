@@ -1,0 +1,234 @@
+#!/usr/bin/env bash
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+ITEM_DIR="$HOME/.config/sketchybar/items"
+export PLUGIN_DIR
+export ITEM_DIR
+
+# (pywal colours if present, else the fallback so the bar still shows)
+if [ -f "$HOME/.cache/wal/colors-sketchybar.sh" ]; then
+  source "$HOME/.cache/wal/colors-sketchybar.sh"
+else
+  source "$HOME/.config/sketchybar/colors-fallback.sh"
+fi
+
+# ── wm detection (aerospace vs rift) ──
+# (whichever wm is running drives the pills + glyphs. rift uses the *_rift.sh
+# counterparts, defaults to aerospace.)
+if pgrep -x rift >/dev/null 2>&1; then
+  WM=rift
+  WS_CHANGE_EVENT=rift_workspace_change
+  FOCUS_EVENT=rift_focus_change
+  SPACES_ITEMS="$ITEM_DIR/spaces_rift.sh"
+  WINDOWS_PLUGIN="$PLUGIN_DIR/windows_rift.sh"
+  WINDOWS_FOCUS_PLUGIN="$PLUGIN_DIR/windows_focus_rift.sh"
+  PEEK_WATCH="$PLUGIN_DIR/riftpeek_watch.sh"
+else
+  WM=aerospace
+  WS_CHANGE_EVENT=aerospace_workspace_change
+  FOCUS_EVENT=focus_change
+  SPACES_ITEMS="$ITEM_DIR/spaces.sh"
+  WINDOWS_PLUGIN="$PLUGIN_DIR/windows.sh"
+  WINDOWS_FOCUS_PLUGIN="$PLUGIN_DIR/windows_focus.sh"
+  PEEK_WATCH="$PLUGIN_DIR/workspacepeek_watch.sh"
+fi
+
+sketchybar --bar \
+  position=top \
+  height=40 \
+  margin=0 \
+  y_offset=0 \
+  corner_radius=0 \
+  blur_radius=20 \
+  color=$BAR_BG \
+  border_width=0 \
+  padding_left=8 \
+  padding_right=8 \
+  topmost=off \
+  sticky=on \
+  display=all
+
+sketchybar --default \
+  padding_left=4 \
+  padding_right=4 \
+  icon.font="JetBrainsMono Nerd Font:Bold:17.0" \
+  label.font="JetBrainsMono Nerd Font:Bold:17.0" \
+  icon.color=$WHITE \
+  label.color=$WHITE \
+  icon.padding_left=4 \
+  icon.padding_right=4 \
+  label.padding_left=4 \
+  label.padding_right=4
+
+sketchybar --add event aerospace_workspace_change
+sketchybar --add event focus_change
+sketchybar --add event rift_workspace_change
+sketchybar --add event rift_focus_change
+source "$SPACES_ITEMS"
+
+# (separator between workspaces and window items)
+sketchybar --add item left_sep left \
+  --set left_sep \
+    width=10 \
+    background.drawing=off \
+    icon.drawing=off \
+    label.drawing=off
+
+sketchybar --add item window_tracker left \
+  --set window_tracker \
+    script="$WINDOWS_PLUGIN" \
+    drawing=off \
+  --subscribe window_tracker "$WS_CHANGE_EVENT"
+
+# Workspace HUD
+    drawing=off \
+
+sketchybar --add item window_focus_tracker left \
+  --set window_focus_tracker \
+    script="$WINDOWS_FOCUS_PLUGIN" \
+    drawing=off \
+  --subscribe window_focus_tracker "$FOCUS_EVENT" front_app_switched
+
+# Music
+sketchybar --add item music right \
+           --set music \
+             update_freq=5 \
+             icon.color=$WHITE \
+             label.color=$WHITE \
+             label.max_chars=30 \
+             script="$PLUGIN_DIR/music.sh"
+
+sketchybar --add item sep3 right \
+           --set sep3 \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+
+# Clock
+sketchybar --add item clock right \
+           --set clock \
+             update_freq=10 \
+             label.padding_right=0 \
+             icon.color=$WHITE \
+             label.color=$WHITE \
+             script="$PLUGIN_DIR/clock.sh"
+
+sketchybar --add item sep2 right \
+           --set sep2 \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+
+# Weather
+sketchybar --add item weather right \
+           --set weather \
+             update_freq=1800 \
+             icon.color=$WHITE \
+             label.color=$WHITE \
+             script="$PLUGIN_DIR/weather.sh" \
+	     click_script="$PLUGIN_DIR/weather_click.sh"
+
+sketchybar --add item sep1 right \
+           --set sep1 \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+
+# Battery
+sketchybar --add item battery right \
+           --set battery \
+             update_freq=120 \
+             icon.color=$WHITE \
+             label.color=$WHITE \
+             script="$PLUGIN_DIR/battery.sh" \
+           --subscribe battery system_woke power_source_change
+
+sketchybar --add item sep0 right \
+           --set sep0 \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+
+# Volume
+sketchybar --add item volume right \
+           --set volume \
+             icon.color=$WHITE \
+             label.color=$WHITE \
+             script="$PLUGIN_DIR/volume.sh" \
+           --subscribe volume volume_change
+
+for sid in 1 2 3 4 5 6 7 8 9; do
+  sketchybar --subscribe space."$sid" "$WS_CHANGE_EVENT"
+done
+
+sketchybar --subscribe window_tracker "$WS_CHANGE_EVENT"
+sketchybar --subscribe window_focus_tracker "$FOCUS_EVENT" front_app_switched
+
+sketchybar --update
+
+# cpu
+sketchybar --add item sep_cpu right \
+           --set sep_cpu \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+sketchybar --add item cpu right \
+           --set cpu \
+             update_freq=5 \
+             icon="󰍛" \
+             icon.color=$WHITE \
+             label.color=$WHITE \
+             script="$PLUGIN_DIR/cpu.sh" \
+             click_script="$HOME/.config/sketchybar/plugins/cpu_click.sh"
+
+# ── input source (EN/ES/VI) + Neru state, left of cpu ──
+# (right-aligned items add right-to-left, so order here reads: input_source neru | cpu)
+sketchybar --add event neru_toggle
+
+# separator between the input/neru group and cpu
+sketchybar --add item sep_io right \
+           --set sep_io \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+
+# neru daemon on/off
+sketchybar --add item neru right \
+           --set neru \
+             update_freq=5 \
+             icon.padding_right=2 \
+             script="$PLUGIN_DIR/neru.sh" \
+           --subscribe neru neru_toggle
+
+# separator between the input source and the neru indicator
+sketchybar --add item sep_neru right \
+           --set sep_neru \
+             label="|" \
+             label.color=$WHITE \
+             label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+             background.drawing=off \
+             icon.drawing=off
+
+# Keyboard input source
+sketchybar --add item input_source right \
+           --set input_source \
+             update_freq=2 \
+             script="$PLUGIN_DIR/input_source.sh"
+
+# Workspace-peek watcher (refreshes window glyphs + pills on workspace change)
+pkill -f workspacepeek_watch.sh 2>/dev/null
+pkill -f riftpeek_watch.sh 2>/dev/null         # rift counterpart watcher
+pkill -f stage_manager_watch.sh 2>/dev/null   # kill any leftover from the old name
+rm -f /tmp/sketchybar-window-items            # stale item registry from a previous run
+bash "$PEEK_WATCH" &

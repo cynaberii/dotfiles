@@ -1,0 +1,19 @@
+{
+  "id": "matugen-bridge",
+  "name": "Matugen Bridge",
+  "description": "pywal hot-reload bridge via Zen Boosts",
+  "author": "local",
+  "version": "1.0.0",
+  "homepage": "",
+  "style": {"chrome": "", "content": ""},
+  "scripts": {
+    "matugen-bridge.uc.mjs": {
+      "name": "Matugen Bridge",
+      "description": "File watcher and Boosts color bridge",
+      "include": ["chrome://browser/content/browser.xhtml"]
+    }
+  },
+  "tags": [],
+  "fork": ["zen"],
+  "no-updates": true
+}

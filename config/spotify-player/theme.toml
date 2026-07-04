@@ -1,0 +1,19 @@
+# (spotify_player theme, inherits the live wezterm palette. no palette block, so it
+# falls back to terminal ansi colours that wezterm updates live via OSC on wallpaper
+# change. don't let postrun rewrite this with hex, that breaks live reload.)
+
+[[themes]]
+name = "wal"
+
+[themes.component_style]
+playback_track                  = { fg = "BrightWhite", modifiers = ["Bold"] }
+playback_artists                = { fg = "BrightWhite" }
+playback_album                  = { fg = "Yellow" }
+playback_metadata               = { fg = "BrightWhite", modifiers = ["Italic"] }
+playback_progress_bar           = { bg = "BrightBlack", fg = "BrightWhite" }
+current_playing_track_highlight = { fg = "Black", bg = "BrightWhite", modifiers = ["Bold"] }
+page_desc                       = { fg = "Yellow", modifiers = ["Bold"] }
+table_header                    = { fg = "Magenta", modifiers = ["Bold"] }
+highlight                       = { fg = "Black", bg = "BrightWhite", modifiers = ["Bold"] }
+selection                       = { fg = "Black", bg = "Magenta" }
+border                          = { fg = "White" }

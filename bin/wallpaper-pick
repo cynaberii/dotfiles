@@ -1,0 +1,2 @@
+#!/bin/bash
+~/miniconda3/bin/python3 "$HOME/.local/bin/wallpaper-picker.py" "$HOME/Downloads/wallpapers" &

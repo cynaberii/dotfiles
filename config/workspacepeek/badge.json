@@ -1,0 +1,16 @@
+{
+  "bubbleSize": 26,
+  "cornerRadius": 5,
+  "spacing": 5,
+  "fontSize": 18,
+  "glyphYOffset": -3,
+  "glyphXOffset": -2.2,
+  "insetX": 10,
+  "insetY": 10,
+  "selBorderWidth": 3,
+  "selGlowRadius": 12,
+  "selGlowOpacity": 0.9,
+  "titleText": "˚ ₊‧꒰ა  ✦ ˚  · ˚  workspaces  ˚ ·  ˚ ✦  ໒꒱ ‧₊˚",
+  "titleFontSize": 18,
+  "showTitle": true
+}

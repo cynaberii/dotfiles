@@ -1,0 +1,37 @@
+name: build & install check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:   # lets you run it by hand from the Actions tab
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15, macos-26]   # macos-26 = Tahoe
+        # runner images:
+        # https://github.com/actions/runner-images
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain versions
+        run: swift --version
+
+      - name: Build WalNotify (the only Swift app in this repo)
+        # WorkspacePeek and WallpaperPeek live in their own repos.
+        run: ( cd swift/WalNotify && swift build -c release )
+
+      - name: Install pywal (needed to wire the balanced backend)
+        run: python3 -m pip install --break-system-packages pywal
+
+      - name: Run install.sh (symlink configs + wire the backend)
+        run: bash install.sh
+
+      - name: Verify the links landed
+        run: |
+          test -L "$HOME/.config/sketchybar" && echo "configs symlinked ok"
+          backend="$(python3 -c 'import pywal, os; print(os.path.join(os.path.dirname(pywal.__file__), "backends", "balanced.py"))')"
+          test -L "$backend" && echo "balanced backend wired ok"

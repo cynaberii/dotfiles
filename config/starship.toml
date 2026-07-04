@@ -1,0 +1,102 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# (postrun flips this between ricing_dark / ricing_light on light/dark switch.
+# both palettes are at the bottom.)
+palette = "ricing_dark"
+
+format = """
+$username\
+$directory\
+$git_branch\
+$character\
+"""
+
+right_format = """$time"""
+
+add_newline = false
+
+[username]
+show_always = true
+style_user = "bold fg:text"
+style_root = "bold fg:text"
+format = '[ dotfiles ](bold fg:text)'
+disabled = false
+
+[directory]
+style = "fg:accent"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[git_branch]
+symbol = ""
+style = "fg:muted"
+format = '[ $symbol $branch ]($style)'
+
+[git_status]
+style = "fg:muted"
+format = '[$all_status$ahead_behind ]($style)'
+
+[character]
+success_symbol = ""
+error_symbol = ""
+format = "$symbol  "
+
+[time]
+disabled = false
+time_format = "%R"
+style = "fg:muted"
+format = '[ ♥ $time ]($style)'
+
+# ── palettes ──
+# (same look in both, the light variant swaps light text tones for dark ones)
+[palettes.ricing_dark]
+text   = "#EFE7DC"
+accent = "#C9B6A6"
+muted  = "#85776E"
+
+[palettes.ricing_light]
+text   = "#2f2722"
+accent = "#6b5544"
+muted  = "#5c4f45"
+
+[c]
+disabled = true
+[golang]
+disabled = true
+[nodejs]
+disabled = true
+[rust]
+disabled = true
+[python]
+disabled = true
+[java]
+disabled = true
+[kotlin]
+disabled = true
+[elixir]
+disabled = true
+[elm]
+disabled = true
+[gradle]
+disabled = true
+[haskell]
+disabled = true
+[julia]
+disabled = true
+[maven]
+disabled = true
+[bun]
+disabled = true
+[nim]
+disabled = true
+[scala]
+disabled = true
+[docker_context]
+disabled = true

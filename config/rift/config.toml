@@ -1,0 +1,169 @@
+# rift config. scrolling (niri-style) layout, aerospace-style keybinds.
+# docs: https://github.com/acsandmann/rift/wiki/Config
+# (rift won't manage windows until you activate a space with Alt+Delete.)
+
+[settings]
+animate = false
+animation_duration = 0.3
+animation_fps = 100.0
+
+focus_follows_mouse = false
+mouse_follows_focus = true
+mouse_hides_on_focus = false
+
+auto_focus_blacklist = []
+
+# ── sketchybar integration ──
+# (rift fires events, forward them to sketchybar as custom triggers. see plugins/rift.sh)
+run_on_start = [
+  "rift-cli subscribe cli --event workspace_changed --command sh --args -c --args 'sketchybar --trigger rift_workspace_change'",
+  "rift-cli subscribe cli --event windows_changed   --command sh --args -c --args 'sketchybar --trigger rift_workspace_change'",
+  "rift-cli subscribe cli --event window_title_changed --command sh --args -c --args 'sketchybar --trigger rift_focus_change'",
+  # (launch borders as a child of rift so it inherits rift's accessibility trust.
+  # ax_focus glow can't resolve rift's SkyLight focus otherwise.)
+  "/bin/bash $HOME/.config/borders/bordersrc",
+]
+
+hot_reload = true
+
+[settings.layout]
+mode = "scrolling"
+
+[settings.layout.scrolling]
+column_width_ratio = 0.5
+min_column_width_ratio = 0.3
+# (1.0 so a column can fill the screen, used by the Alt+M maximize toggle)
+max_column_width_ratio = 1.0
+alignment = "center"
+focus_navigation_style = "niri"
+
+[settings.layout.stack]
+stack_offset = 30.0
+default_orientation = "perpendicular"
+
+[settings.layout.gaps.outer]
+top = 55
+left = 25
+bottom = 20
+right = 25
+
+[settings.layout.gaps.inner]
+horizontal = 24
+vertical = 24
+
+[virtual_workspaces]
+enabled = true
+# (rift is 0-indexed, so Alt+N maps to workspace index N-1 below)
+default_workspace_count = 9
+auto_assign_windows = true
+preserve_focus_per_workspace = true
+workspace_auto_back_and_forth = false
+reapply_app_rules_on_title_change = false
+workspace_rules = []
+workspace_names = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+app_rules = [
+  { app_id = "com.github.wez.wezterm", title_substring = "wallpaper-picker", floating = true },
+]
+
+[modifier_combinations]
+comb1 = "Alt + Shift"
+
+[keys]
+# ── space activation ──
+"Alt + Delete" = "toggle_space_activated"
+
+# ── focus ──
+"Alt + H" = { move_focus = "left" }
+"Alt + J" = { move_focus = "down" }
+"Alt + K" = { move_focus = "up" }
+"Alt + L" = { move_focus = "right" }
+"Alt + Left"  = { move_focus = "left" }
+"Alt + Down"  = { move_focus = "down" }
+"Alt + Up"    = { move_focus = "up" }
+"Alt + Right" = { move_focus = "right" }
+
+# ── move window ──
+"comb1 + H" = { move_node = "left" }
+"comb1 + J" = { move_node = "down" }
+"comb1 + K" = { move_node = "up" }
+"comb1 + L" = { move_node = "right" }
+"comb1 + Left"  = { move_node = "left" }
+"comb1 + Down"  = { move_node = "down" }
+"comb1 + Up"    = { move_node = "up" }
+"comb1 + Right" = { move_node = "right" }
+
+# ── scrolling (niri) ──
+"Alt + Backslash" = "snap_strip"
+"Alt + Period" = { scroll_strip = { delta = 0.5 } }    # scroll right
+"Alt + Comma"  = { scroll_strip = { delta = -0.5 } }   # scroll left
+
+# ── layout tweaks ──
+"Alt + Shift + O" = "toggle_orientation"
+"Alt + Shift + Comma" = "toggle_stack"
+
+# ── join into a column ──
+"Alt + Cmd + Left"  = { join_window = "left" }
+"Alt + Cmd + Right" = { join_window = "right" }
+# (real Backspace isn't bindable in rift. "Delete" here = forward-delete / fn+Delete.)
+"comb1 + Delete" = "unjoin_windows"
+
+# ── resize column width ──
+"Alt + RightBracket" = "resize_window_grow"
+"Alt + LeftBracket"  = "resize_window_shrink"
+# (in-column height resize, rift has no native command. see column-resize.sh.)
+"comb1 + RightBracket" = { "exec" = ["/bin/bash", "$HOME/.config/rift/column-resize.sh", "grow"] }
+"comb1 + LeftBracket"  = { "exec" = ["/bin/bash", "$HOME/.config/rift/column-resize.sh", "shrink"] }
+
+# ── float / fullscreen / maximize ──
+"Alt + Shift + Space" = "toggle_window_floating"
+# (maximize toggle, rift has none. see monocle-toggle.sh.)
+"Alt + M" = { "exec" = ["/bin/bash", "$HOME/.config/rift/monocle-toggle.sh"] }
+"Alt + Shift + M" = "toggle_fullscreen_within_gaps"
+
+# (toggle web-page recolouring in zen. see webtheme-toggle.sh.)
+"Alt + T" = { "exec" = ["/bin/bash", "$HOME/.config/rift/webtheme-toggle.sh"] }
+
+# (toggle neru keyboard-nav daemon. see neru-toggle.sh.)
+"comb1 + N" = { "exec" = ["/bin/bash", "$HOME/.config/rift/neru-toggle.sh"] }
+
+# (bulk-unload background zen tabs. see zen-unload.sh.)
+"comb1 + U" = { "exec" = ["/bin/bash", "$HOME/.config/rift/zen-unload.sh"] }
+
+# (relaunch borders as a child of rift. see restart-borders.sh.)
+"comb1 + B" = { "exec" = ["/bin/bash", "$HOME/.config/rift/restart-borders.sh"] }
+
+# ── switch workspace ──
+"Alt + 1" = { switch_to_workspace = 0 }
+"Alt + 2" = { switch_to_workspace = 1 }
+"Alt + 3" = { switch_to_workspace = 2 }
+"Alt + 4" = { switch_to_workspace = 3 }
+"Alt + 5" = { switch_to_workspace = 4 }
+"Alt + 6" = { switch_to_workspace = 5 }
+"Alt + 7" = { switch_to_workspace = 6 }
+"Alt + 8" = { switch_to_workspace = 7 }
+"Alt + 9" = { switch_to_workspace = 8 }
+
+# ── move window to workspace ──
+"comb1 + 1" = { move_window_to_workspace = 0 }
+"comb1 + 2" = { move_window_to_workspace = 1 }
+"comb1 + 3" = { move_window_to_workspace = 2 }
+"comb1 + 4" = { move_window_to_workspace = 3 }
+"comb1 + 5" = { move_window_to_workspace = 4 }
+"comb1 + 6" = { move_window_to_workspace = 5 }
+"comb1 + 7" = { move_window_to_workspace = 6 }
+"comb1 + 8" = { move_window_to_workspace = 7 }
+"comb1 + 9" = { move_window_to_workspace = 8 }
+
+# ── back-and-forth ──
+"Alt + Tab" = "switch_to_last_workspace"
+
+# ── switch layout engine ──
+"Alt + Ctrl + 1" = { set_workspace_layout = { mode = "scrolling" } }
+"Alt + Ctrl + 2" = { set_workspace_layout = { mode = "traditional" } }
+"Alt + Ctrl + 3" = { set_workspace_layout = { mode = "bsp" } }
+"Alt + Ctrl + 4" = { set_workspace_layout = { mode = "master_stack" } }
+
+# ── debug ──
+"Alt + Shift + D" = "debug"
+"Alt + Ctrl + Q"  = "save_and_exit"

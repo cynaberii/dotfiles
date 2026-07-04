@@ -1,0 +1,15 @@
+{
+  "id": "matugen-wabi",
+  "name": "Matugen Wabi",
+  "description": "pywal-driven Zen chrome colors",
+  "author": "local",
+  "version": "1.0.0",
+  "homepage": "",
+  "style": {
+    "chrome": "chrome.css",
+    "content": ""
+  },
+  "tags": [],
+  "fork": ["zen"],
+  "no-updates": true
+}

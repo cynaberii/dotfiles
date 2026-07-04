@@ -1,0 +1,8 @@
+#!/bin/bash
+/opt/homebrew/bin/borders \
+  style=square \
+  width=7 \
+  hidpi=on \
+  ax_focus=on \
+  active_color="glow(0xff7f6768)" \
+  inactive_color=0xff5d5b6a

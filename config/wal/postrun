@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+
+WAL_CACHE="$HOME/.cache/wal"
+
+# (full paths, launchd has no PATH)
+SKETCHYBAR=/opt/homebrew/bin/sketchybar
+BORDERS=/opt/homebrew/bin/borders
+PYTHON=$HOME/miniconda3/bin/python3
+JQ=/opt/homebrew/bin/jq
+
+source "$WAL_CACHE/colors.sh"
+
+# (pick a light palette colour for the borders)
+BORDER_COLORS=$($PYTHON -c "
+import json
+with open('$HOME/.cache/wal/colors.json') as f:
+    c = json.load(f)
+colors = list(c['colors'].values())
+def lum(h):
+    h = h.lstrip('#')
+    r,g,b = int(h[0:2],16), int(h[2:4],16), int(h[4:6],16)
+    return 0.299*r + 0.587*g + 0.114*b
+sorted_colors = sorted(colors, key=lum)
+chosen = sorted_colors[5].lstrip('#')
+chosen_inactive = sorted_colors[4].lstrip('#')
+print(chosen + ' ' + chosen_inactive)
+")
+BORDER_COLOR=$(echo $BORDER_COLORS | cut -d' ' -f1)
+BORDER_COLOR_INACTIVE=$(echo $BORDER_COLORS | cut -d' ' -f2)
+
+bash "$HOME/.config/wal/wal-wezterm-seq.sh" &
+
+# Sketchybar
+if pgrep -x sketchybar > /dev/null; then
+  $SKETCHYBAR --reload &
+fi
+
+# (yazi, written inline: 26.x needs the inline-table format)
+{
+source "$HOME/.cache/wal/colors.sh"
+cat > "$HOME/.config/yazi/theme.toml" << YAZI
+[mgr]
+cwd = { fg = "$color15" }
+hovered = { fg = "$color0", bg = "$color7" }
+find_keyword = { fg = "$color14", italic = true }
+find_position = { fg = "$color15", bold = true, italic = true }
+marker_copied = { fg = "$color0", bg = "$color14" }
+marker_cut = { fg = "$color0", bg = "$color1" }
+marker_marked = { fg = "$color0", bg = "$color10" }
+marker_selected = { fg = "$color0", bg = "$color13" }
+tab_active = { fg = "$color0", bg = "$color15" }
+tab_inactive = { fg = "$color1", bg = "$color8" }
+count_copied = { fg = "$color0", bg = "$color14" }
+count_cut = { fg = "$color0", bg = "$color1" }
+count_selected = { fg = "$color0", bg = "$color13" }
+border_fg = "$color13"
+
+[status]
+mode_normal = { fg = "$color0", bg = "$color15", bold = true }
+mode_select = { fg = "$color0", bg = "$color10", bold = true }
+mode_unset = { fg = "$color0", bg = "$color1", bold = true }
+progress_fg = "$color15"
+progress_bg = "$color8"
+progress_error = { fg = "$color1", bg = "$color0" }
+permissions_t = "$color15"
+permissions_r = "$color14"
+permissions_w = "$color1"
+permissions_x = "$color10"
+permissions_s = "$color13"
+
+[input]
+border = "$color13"
+selected = { fg = "$color0", bg = "$color15" }
+
+[select]
+border = "$color13"
+active = "$color15"
+
+[tasks]
+border = "$color13"
+
+[which]
+mask_bg = "$color8"
+cand = "$color15"
+rest = "$color7"
+desc = "$color14"
+
+[notify]
+title_info = "$color15"
+title_warn = "$color14"
+title_error = "$color1"
+
+[filetype]
+rules = [
+  { mime = "image/*", fg = "$color14" },
+  { mime = "video/*", fg = "$color14" },
+  { mime = "audio/*", fg = "$color14" },
+  { mime = "application/zip", fg = "$color1" },
+  { mime = "application/x-tar", fg = "$color1" },
+  { mime = "application/x-bzip2", fg = "$color1" },
+  { mime = "application/x-7z-compressed", fg = "$color1" },
+  { mime = "application/x-rar", fg = "$color1" },
+  { mime = "text/*", fg = "$color7" },
+  { mime = "application/json", fg = "$color10" },
+  { mime = "*/", fg = "$color15" },
+]
+YAZI
+} &
+
+cp "$WAL_CACHE/colors-btop.theme" "$HOME/.config/btop/themes/wal.theme"
+pgrep -x "btop" | xargs -r kill -USR2 &
+
+STARSHIP_CFG="$HOME/.config/starship.toml"
+if [[ -f "$STARSHIP_CFG" ]]; then
+  if [[ "$(cat "$HOME/.cache/wal/appearance" 2>/dev/null)" == "light" ]]; then
+    SP_PALETTE="ricing_light"
+  else
+    SP_PALETTE="ricing_dark"
+  fi
+  /usr/bin/sed "s/^palette = .*/palette = \"$SP_PALETTE\"/" "$STARSHIP_CFG" > "/tmp/starship.$$" \
+    && /bin/cp "/tmp/starship.$$" "$STARSHIP_CFG" && /bin/rm -f "/tmp/starship.$$"
+fi
+
+NERU_TMPL="$HOME/.config/neru/config.toml.tmpl"
+NERU_CFG="$HOME/.config/neru/config.toml"
+if [[ -f "$NERU_TMPL" ]]; then
+  /usr/bin/sed \
+    -e "s|%ON_ACCENT_ALT%|$background|g" \
+    -e "s|%ACCENT_ALT%|$color10|g" \
+    -e "s|%ACCENT%|$color13|g" \
+    -e "s|%SURFACE%|$background|g" \
+    -e "s|%TEXT%|$foreground|g" \
+    "$NERU_TMPL" > "$NERU_CFG.tmp" && /bin/mv "$NERU_CFG.tmp" "$NERU_CFG"
+  /opt/homebrew/bin/neru config reload >/dev/null 2>&1 &
+fi
+
+if pgrep -x borders > /dev/null; then
+  cat > "$HOME/.config/borders/bordersrc" << BORDERS
+#!/bin/bash
+/opt/homebrew/bin/borders \\
+  style=square \\
+  width=7 \\
+  hidpi=off \\
+  ax_focus=on \\
+  active_color="glow(0xff${BORDER_COLOR})" \\
+  inactive_color=0xff${BORDER_COLOR_INACTIVE}
+BORDERS
+  $BORDERS active_color="glow(0xff${BORDER_COLOR})" inactive_color=0xff${BORDER_COLOR_INACTIVE} &
+fi
+
+BASE_CAPE="$HOME/.config/wal/forgetmenotGREY_base.cape"
+MOUSECLOAK="/Applications/Mousecape.app/Contents/MacOS/mousecloak"
+CAPE_DIR="$HOME/.config/wal/capes"
+mkdir -p "$CAPE_DIR"
+
+WALLPAPER=$(grep "^wallpaper=" "$HOME/.cache/wal/colors.sh" | cut -d'"' -f2)
+WALLPAPER_NAME=$(basename "$WALLPAPER" | sed 's/\.[^.]*$//')
+OUT_CAPE="$CAPE_DIR/${WALLPAPER_NAME}.cape"
+
+MOUSECAPE_DIR="$HOME/Library/Application Support/Mousecape/capes"
+
+if [[ -f "$BASE_CAPE" ]]; then
+  $PYTHON "$HOME/.config/wal/wal-recolour-cape.py" "$BASE_CAPE" "$OUT_CAPE" && {
+    cp "$OUT_CAPE" "$MOUSECAPE_DIR/${WALLPAPER_NAME}.cape"
+    $MOUSECLOAK --apply "$OUT_CAPE"
+  } &
+fi
+
+# Neovim
+{
+source "$HOME/.cache/wal/colors.sh"
+cat > "$HOME/.cache/wal/colors-nvim.lua" << NVIM
+-- pywal generated, do not edit by hand
+vim.api.nvim_set_hl(0, "Normal",        { fg = "$color15", bg = "none" })
+vim.api.nvim_set_hl(0, "NormalFloat",   { fg = "$color15", bg = "none" })
+vim.api.nvim_set_hl(0, "Comment",       { fg = "$color1",  italic = true })
+vim.api.nvim_set_hl(0, "String",        { fg = "$color14" })
+vim.api.nvim_set_hl(0, "Keyword",       { fg = "$color13", bold = true })
+vim.api.nvim_set_hl(0, "Function",      { fg = "$color15", bold = true })
+vim.api.nvim_set_hl(0, "Identifier",    { fg = "$color14" })
+vim.api.nvim_set_hl(0, "Type",          { fg = "$color13" })
+vim.api.nvim_set_hl(0, "Constant",      { fg = "$color11" })
+vim.api.nvim_set_hl(0, "Number",        { fg = "$color11" })
+vim.api.nvim_set_hl(0, "Operator",      { fg = "$color7" })
+vim.api.nvim_set_hl(0, "Statement",     { fg = "$color13" })
+vim.api.nvim_set_hl(0, "PreProc",       { fg = "$color14" })
+vim.api.nvim_set_hl(0, "Special",       { fg = "$color12" })
+vim.api.nvim_set_hl(0, "Error",         { fg = "$color1",  bold = true })
+vim.api.nvim_set_hl(0, "Todo",          { fg = "$color0",  bg = "$color14", bold = true })
+vim.api.nvim_set_hl(0, "LineNr",        { fg = "$color8" })
+vim.api.nvim_set_hl(0, "CursorLineNr",  { fg = "$color15", bold = true })
+vim.api.nvim_set_hl(0, "CursorLine",    { bg = "none" })
+vim.api.nvim_set_hl(0, "StatusLine",    { fg = "$color15", bg = "none" })
+vim.api.nvim_set_hl(0, "StatusLineNC",  { fg = "$color8",  bg = "none" })
+vim.api.nvim_set_hl(0, "VertSplit",     { fg = "$color8",  bg = "none" })
+vim.api.nvim_set_hl(0, "Visual",        { fg = "$color0",  bg = "$color7" })
+vim.api.nvim_set_hl(0, "Search",        { fg = "$color0",  bg = "$color15" })
+vim.api.nvim_set_hl(0, "IncSearch",     { fg = "$color0",  bg = "$color14" })
+vim.api.nvim_set_hl(0, "Pmenu",         { fg = "$color15", bg = "$color8" })
+vim.api.nvim_set_hl(0, "PmenuSel",      { fg = "$color0",  bg = "$color15" })
+vim.api.nvim_set_hl(0, "PmenuSbar",     { bg = "$color8" })
+vim.api.nvim_set_hl(0, "PmenuThumb",    { bg = "$color7" })
+vim.api.nvim_set_hl(0, "TabLine",       { fg = "$color8",  bg = "none" })
+vim.api.nvim_set_hl(0, "TabLineSel",    { fg = "$color15", bg = "none", bold = true })
+vim.api.nvim_set_hl(0, "TabLineFill",   { bg = "none" })
+vim.api.nvim_set_hl(0, "WinSeparator",  { fg = "$color8" })
+vim.api.nvim_set_hl(0, "NonText",       { fg = "$color8" })
+vim.api.nvim_set_hl(0, "Whitespace",    { fg = "$color8" })
+vim.api.nvim_set_hl(0, "EndOfBuffer",   { fg = "$color8" })
+vim.api.nvim_set_hl(0, "MatchParen",    { fg = "$color15", bold = true, underline = true })
+vim.api.nvim_set_hl(0, "Directory",     { fg = "$color15", bold = true })
+NVIM
+} &
+
+# Notification
+WALLPAPER_NAME=$(basename "$(grep '^wallpaper=' "$HOME/.cache/wal/colors.sh" | cut -d'"' -f2)")
+"$HOME/.local/bin/WalNotify" "$WALLPAPER_NAME" &
+
+# Discord Vencord theme
+$PYTHON "$HOME/.config/wal/wal-discord-theme.py" &
+
+bash "$HOME/.config/wal/wal-zen.sh" &
+
+wait
+

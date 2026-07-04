@@ -1,0 +1,140 @@
+# Place a copy of this config to ~/.aerospace.toml
+# After that, you can edit ~/.aerospace.toml to your liking
+
+# You can use it to add commands that run after login to macOS user session.
+# 'start-at-login' needs to be 'true' for 'after-login-command' to work
+# Available commands: https://nikitabobko.github.io/AeroSpace/commands
+after-login-command = []
+
+# You can use it to add commands that run after AeroSpace startup.
+# 'after-startup-command' is run after 'after-login-command'
+# Available commands : https://nikitabobko.github.io/AeroSpace/commands
+after-startup-command = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
+
+# Start AeroSpace at login
+start-at-login = false
+
+# Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# See: https://nikitabobko.github.io/AeroSpace/guide#layouts
+accordion-padding = 30
+
+# Possible values: tiles|accordion
+default-root-container-layout = 'tiles'
+
+# Possible values: horizontal|vertical|auto
+default-root-container-orientation = 'auto'
+
+# Mouse follows focus when focused monitor changes
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+
+automatically-unhide-macos-hidden-apps = false
+
+[key-mapping]
+    preset = 'qwerty'
+
+[gaps]
+    inner.horizontal = 17
+    inner.vertical =   17
+    outer.left =       25
+    outer.bottom =     20
+    outer.top = 55
+    outer.right =      25
+
+[mode.main.binding]
+
+    alt-slash = 'layout tiles horizontal vertical'
+    alt-comma = 'layout accordion horizontal vertical'
+
+    alt-left = ['focus left', 'exec-and-forget sketchybar --trigger focus_change']
+    alt-down = ['focus down', 'exec-and-forget sketchybar --trigger focus_change']
+    alt-up = ['focus up', 'exec-and-forget sketchybar --trigger focus_change']
+    alt-right = ['focus right', 'exec-and-forget sketchybar --trigger focus_change']
+
+    alt-h = ['focus left', 'exec-and-forget sketchybar --trigger focus_change']
+    alt-j = ['focus down', 'exec-and-forget sketchybar --trigger focus_change']
+    alt-k = ['focus up', 'exec-and-forget sketchybar --trigger focus_change']
+    alt-l = ['focus right', 'exec-and-forget sketchybar --trigger focus_change']
+
+    alt-shift-h = 'move left'
+    alt-shift-j = 'move down'
+    alt-shift-k = 'move up'
+    alt-shift-l = 'move right'
+
+    alt-shift-left = 'move left'
+    alt-shift-down = 'move down'
+    alt-shift-up = 'move up'
+    alt-shift-right = 'move right'
+
+    alt-minus = 'resize smart -50'
+    alt-equal = 'resize smart +50'
+
+    # (ws-capture.sh snapshots the workspace you're leaving before the switch, so the
+    # switcher always has a fresh thumbnail)
+    alt-1 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 1', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-2 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 2', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-3 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 3', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-4 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 4', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-5 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 5', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-6 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 6', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-7 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 7', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-8 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 8', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-9 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 9', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+    alt-keypad1 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 1']
+    alt-keypad2 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 2']
+    alt-keypad3 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 3']
+    alt-keypad4 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 4']
+    alt-keypad5 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 5']
+    alt-keypad6 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 6']
+    alt-keypad7 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 7']
+    alt-keypad8 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 8']
+    alt-keypad9 = ['exec-and-forget ~/.local/bin/ws-capture.sh', 'workspace 9']
+
+    alt-shift-1 = 'move-node-to-workspace 1'
+    alt-shift-2 = 'move-node-to-workspace 2'
+    alt-shift-3 = 'move-node-to-workspace 3'
+    alt-shift-4 = 'move-node-to-workspace 4'
+    alt-shift-5 = 'move-node-to-workspace 5'
+    alt-shift-6 = 'move-node-to-workspace 6'
+    alt-shift-7 = 'move-node-to-workspace 7'
+    alt-shift-8 = 'move-node-to-workspace 8'
+    alt-shift-9 = 'move-node-to-workspace 9'
+    alt-shift-keypad1 = 'move-node-to-workspace 1'
+    alt-shift-keypad2 = 'move-node-to-workspace 2'
+    alt-shift-keypad3 = 'move-node-to-workspace 3'
+    alt-shift-keypad4 = 'move-node-to-workspace 4'
+    alt-shift-keypad5 = 'move-node-to-workspace 5'
+    alt-shift-keypad6 = 'move-node-to-workspace 6'
+    alt-shift-keypad7 = 'move-node-to-workspace 7'
+    alt-shift-keypad8 = 'move-node-to-workspace 8'
+    alt-shift-keypad9 = 'move-node-to-workspace 9'
+
+    alt-tab = 'workspace-back-and-forth'
+    alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+    alt-shift-semicolon = 'mode service'
+    alt-shift-c = 'close --quit-if-last-window'
+
+
+[mode.service.binding]
+    esc = ['reload-config', 'mode main']
+    r = ['flatten-workspace-tree', 'mode main']
+    f = ['layout floating tiling', 'mode main']
+    backspace = ['close-all-windows-but-current', 'mode main']
+
+    alt-shift-h = ['join-with left', 'mode main']
+    alt-shift-j = ['join-with down', 'mode main']
+    alt-shift-k = ['join-with up', 'mode main']
+    alt-shift-l = ['join-with right', 'mode main']
+
+    down = 'volume down'
+    up = 'volume up'
+    shift-down = ['volume set 0', 'mode main']
+
+[[on-window-detected]]
+if.app-id = 'com.github.wez.wezterm'
+if.window-title-regex-substring = 'wallpaper-picker'
+run = 'layout floating'
+

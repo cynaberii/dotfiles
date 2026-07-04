@@ -1,0 +1,78 @@
+# pywal generated, do not edit by hand
+
+[mgr]
+cwd = "{color3}"
+hovered_fg = "{background}"
+hovered_bg = "{color2}"
+find_keyword = "{color3}"
+find_position = "{color3}"
+marker_copied_fg = "{color3}"
+marker_copied_bg = "{color3}"
+marker_cut_fg = "{color1}"
+marker_cut_bg = "{color1}"
+marker_marked_fg = "{color2}"
+marker_marked_bg = "{color2}"
+marker_selected_fg = "{color2}"
+marker_selected_bg = "{color2}"
+tab_active_fg = "{background}"
+tab_active_bg = "{color2}"
+tab_inactive_fg = "{color7}"
+tab_inactive_bg = "{color0}"
+count_copied_fg = "{background}"
+count_copied_bg = "{color3}"
+count_cut_fg = "{background}"
+count_cut_bg = "{color1}"
+count_selected_fg = "{background}"
+count_selected_bg = "{color2}"
+border_fg = "{color2}"
+
+[status]
+mode_normal_fg = "{background}"
+mode_normal_bg = "{color2}"
+mode_select_fg = "{background}"
+mode_select_bg = "{color3}"
+mode_unset_fg = "{background}"
+mode_unset_bg = "{color1}"
+progress_fg = "{color2}"
+progress_bg = "{background}"
+progress_error_fg = "{color1}"
+progress_error_bg = "{background}"
+permissions_t = "{color2}"
+permissions_r = "{color3}"
+permissions_w = "{color1}"
+permissions_x = "{color6}"
+permissions_s = "{color4}"
+
+[input]
+border = "{color2}"
+selected_fg = "{background}"
+selected_bg = "{color2}"
+
+[select]
+border = "{color2}"
+active = "{color3}"
+
+[tasks]
+border = "{color2}"
+
+[which]
+mask_bg = "{color0}"
+cand = "{color2}"
+rest = "{color1}"
+desc = "{color3}"
+
+[notify]
+title_info = "{color2}"
+title_warn = "{color3}"
+title_error = "{color1}"
+
+[filetype]
+image = "{color3}"
+video = "{color3}"
+audio = "{color3}"
+archive = "{color1}"
+text = "{color7}"
+config = "{color2}"
+document = "{color3}"
+directory = "{color2}"
+default = "{foreground}"

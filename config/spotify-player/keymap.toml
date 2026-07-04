@@ -1,0 +1,23 @@
+[[keymaps]]
+command = "Repeat"
+key_sequence = "r"
+
+[[keymaps]]
+command = "ResumePause"
+key_sequence = "space"
+
+[[keymaps]]
+command = "LyricsPage"
+key_sequence = "L"
+
+[[keymaps]]
+command = "Queue"
+key_sequence = "Q"
+
+[[keymaps]]
+command = "PreviousPage"
+key_sequence = "backspace"
+
+[[keymaps]]
+command = "OpenSpotifyLinkFromClipboard"
+key_sequence = "P"
